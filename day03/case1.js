@@ -1,7 +1,9 @@
 let Promise = require('./promise')
 
 let p = new Promise((resolve, reject) => {
-  resolve('hello')
+  setTimeout(() => {
+    reject('出错')
+  }, 3000)
 })
 
 p.then((value) => {
