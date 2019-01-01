@@ -37,17 +37,36 @@ function resolvePromise (promise2, x, resolve, reject) {
   if (x === promise2) {
     return reject(new TypeError('循环引用'))
   }
+  let called;
   if (typeof x !== null && (typeof x === 'function' || typeof x === 'object')) {
     // 是promise 才取then方法
     try {
       let then = x.then // then 必须是方法而不是属性之类的
       if (typeof then === 'function') {
+        if (!called) { // 只能成功一次或者失败一次，而不是多次
+          called = true
+        } else {
+          return
+        }
+        // 这个promise可能是别人写的，可能又成功又失败
         then.call(x, function (y) { // 必须让then方法执行把值传递到下一步
-          resolve(y)
+          // y 可能还是promise，再需要处理为普通值，递归解析promise直到常量
+          // resolve(y)
+          resolvePromise(promise2, y, resolve, reject)
         }, function (r) {
+          if (!called) {
+            called = true
+          } else {
+            return
+          }
           reject(r)
         })
       } else {
+        if (!called) {
+          called = true
+        } else {
+          return
+        }
         resolve(x)
       }
     } catch (error) {
@@ -59,6 +78,13 @@ function resolvePromise (promise2, x, resolve, reject) {
 }
 
 Promise.prototype.then = function (onFulfilled, onRejected) {
+  // onFulfilled onRejected 是可选参数
+  onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : function (data) {
+    return data
+  }
+  onRejected = typeof onRejected === 'function' ? onRejected : function (err) {
+    throw err
+  }
   // then 方法中需要传递两个回调，成功和失败回调
   let self = this
   // 调用then 后返回一个promise
@@ -101,6 +127,7 @@ Promise.prototype.then = function (onFulfilled, onRejected) {
   return promise2
 }
 
+// catch 其实是then的简写，把失败的回调传递过去
 Promise.prototype.catch = function (errFn) {
   return this.then(null, errFn)
 }
@@ -123,15 +150,15 @@ Promise.all = function (promises) {
     function processData (index, value) {
       arr[index] = value
       currentIndex++
-      if (currentIndex === promises.length) {
+      if (currentIndex === promises.length) { // 当所有的promise都执行成为就成功了
         resolve(arr)
       }
     }
     for (let i = 0; i < promises.length; i++) {
-      promises[i].then(function (data) {
+      promises[i].then(function (data) { // 让数组里面的promise执行
         processData(i, data)
       }, function (err) {
-        reject(err)
+        reject(err) // 里面的任何一个promise失败就失败了
       })
     }
   })
@@ -145,8 +172,10 @@ Promise.race = function (promises) {
   })
 }
 
+// es9的语法，finally 无论如何都会执行的方法，then里面的成功和失败都都要写，还可以接着then
 Promise.prototype.finally = function (callback) {
   return this.then(function (data) {
+    // 先让函数执行再返回promise, callback 也可能是promise的
     return Promise.resolve(callback()).then(function () {
       return data
     })

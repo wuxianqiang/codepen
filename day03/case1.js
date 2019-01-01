@@ -35,15 +35,87 @@ let Promise = require('./promise3')
 //   console.log(err)
 // })
 
+// let p = new Promise(function (resolve, reject) {
+//   resolve('ok')
+// })
+// let promise2 = p.then((data) => {
+//   // 循环引用，因为自己循环引用
+//   return new Promise(function (resolve, reject) {
+//     // resolve(100) // 100就是y的值
+//     reject(100) // 100就是r的值
+//   })
+// }).then((data) => {
+//   console.log(data)
+// }, (err) => {
+//   console.log('err', err)
+// })
+// promise 必须异步执行then方法
+
+
+// let p = new Promise(function (resolve, reject) {
+//   resolve('ok')
+// })
+// let promise2 = p.then((data) => {
+//   // 递归解析
+//   return new Promise((resolve, reject) => {
+//     resolve(new Promise((resolve, reject) => {
+//       resolve(100)
+//     }))
+//   })
+// }).then((data) => {
+//   console.log('data', data)
+// }, (err) => {
+//   console.log('err', err)
+// })
+
+// let p = new Promise(function (resolve, reject) {
+//     resolve('ok')
+//   })
+// let promise2 = p.then().then((data) => {
+//   console.log('data', data)
+// }, (err) => {
+//   console.log('err', err)
+// })
+
+
+let p = new Promise(function (resolve, reject) {
+    resolve('ok')
+  })
+let promise2 = p.then().then((data) => {
+  console.log('data', data)
+}, (err) => {
+  console.log('err', err)
+}).catch((err) => {
+  console.log(err)
+})
+
+
 let p = new Promise(function (resolve, reject) {
   resolve('ok')
 })
-let promise2 = p.then((data) => {
-  // 循环引用，因为自己循环引用
-  return new Promise(function (resolve, reject) {
-    resolve(100) // 100就是y的值
-  })
-}).then((data) => {
-  console.log(data)
+let promise2 = p.then().then((data) => {
+console.log('data', data)
+}, (err) => {
+console.log('err', err)
+}).catch((err) => {
+console.log(err)
+}).finally(() => {
+  console.log('123')
 })
-// promise 必须异步执行then方法
+
+let p = new Promise(function (resolve, reject) {
+  resolve('ok')
+})
+let promise2 = p.then().then((data) => {
+console.log('data', data)
+}, (err) => {
+console.log('err', err)
+}).catch((err) => {
+console.log(err)
+}).then(() => {
+
+}, () => {
+
+})
+
+// 
