@@ -25,3 +25,9 @@ function co (it) {
     next()
   })
 }
+co(gen()).then((data) => {
+  console.log(data, 'ok')
+})
+
+
+// async+ await 其实就是generator+co来实现的
