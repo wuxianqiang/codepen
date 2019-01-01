@@ -27,56 +27,50 @@ function Promise (executor) {
   try {
     executor(resolve, reject)
   } catch (error) { // 如何执行器发生异常那就走到失败的回调函数中
+    console.log(error)
     reject(error)
   }
 }
 
 // 解析链式调用
-function resolvePromise (x, promise2, resolve, reject) {
+function resolvePromise (promise2, x, resolve, reject) {
   if (x === promise2) {
     return reject(new TypeError('循环引用'))
   }
-  if (x !== null && (typeof x === 'function' || typeof x === 'object')) {
+  if (typeof x !== null && (typeof x === 'function' || typeof x === 'object')) {
+    // 是promise 才取then方法
     try {
-      let then = x.then
-      if (typeof then === 'function') { // 确定是promise，必须有then方法
-        then.call(x, function (y) { // y 可能还是promise,必须递归解析为常量
-          // resolve(y)
-          resolvePromise(y, promise2, resolve, reject)
+      let then = x.then // then 必须是方法而不是属性之类的
+      if (typeof then === 'function') {
+        then.call(x, function (y) { // 必须让then方法执行把值传递到下一步
+          resolve(y)
         }, function (r) {
           reject(r)
         })
       } else {
-        // {then: 123}
         resolve(x)
       }
     } catch (error) {
-      reject(error) // 对象上没有then方法
+      reject(error)
     }
-  } else {
-    // x是普通值，直接成功了
+  } else { // 普通值直接成功
     resolve(x)
   }
 }
 
 Promise.prototype.then = function (onFulfilled, onRejected) {
-  onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : function (data) {
-    return data
-  }
-  onRejected = typeof onRejected === 'function' ? onRejected : function (err) {
-    throw err
-  }
   // then 方法中需要传递两个回调，成功和失败回调
   let self = this
   // 调用then 后返回一个promise
   let promise2 = new Promise(function (resolve, reject) {
     if (self.status === 'resolved') {
       // 把then中成功或者失败的函数执行结果取到，判断执行结果是promise还是普通值
-      setTimeout(() => {
+      setTimeout(() => { // 等待promise2初始化完成
         try {
           let x = onFulfilled(self.value)
-          resolvePromise(x, promise2, resolve, reject)
+          resolvePromise(promise2, x, resolve, reject)
         } catch (error) {
+          // console.log(error)
           reject(error)
         }
       }, 0);
@@ -86,7 +80,7 @@ Promise.prototype.then = function (onFulfilled, onRejected) {
       setTimeout(() => {
         try {
           let x = onRejected(self.reason)
-          resolvePromise(x, promise2, resolve, reject)
+          resolvePromise(promise2, x, resolve, reject)
         } catch (error) {
           reject(error)
         }
@@ -96,11 +90,11 @@ Promise.prototype.then = function (onFulfilled, onRejected) {
       // executor 有异步的时候是pending状态
       self.onResolveCallbacks.push(function () {
         let x = onFulfilled(self.value)
-        resolvePromise(x, promise2, resolve, reject)
+        resolvePromise(promise2, x, resolve, reject)
       })
       self.onRejectCallbacks.push(function () {
         let x = onRejected(self.reason)
-        resolvePromise(x, promise2, resolve, reject)
+        resolvePromise(promise2, x, resolve, reject)
       })
     }
   })
@@ -163,8 +157,5 @@ Promise.prototype.finally = function (callback) {
     })
   })
 }
-// promise 必须异步执行我们的then方法
-module.exports = Promise
 
-// promise.all全部成功才成功，任意失败都会失败的
-// promise.race 一个失败就失败了
+module.exports = Promise
