@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>长轮询</title>
+</head>
+<body>
+  <div id="clock"></div>
+
+  <script>
+    let clock = document.getElementById('clock');
+    function send () {
+      let xhr = new XMLHttpRequest()
+      xhr.open('GET', '/clock', true)
+      xhr.onreadystatechange = function (params) {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          let data = xhr.responseText
+          clock.innerHTML = data
+          setTimeout(() => {
+            send()
+          }, 3000)
+        }
+      }
+      xhr.send(null)
+    }
+    send()
+  </script>
+</body>
+</html>
