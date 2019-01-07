@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>socket.io</title>
+</head>
+<body>
+  <h1>hello world</h1>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    let socket = io.connect('/')
+    socket.on('connect', () => {
+      console.log('连接成功')
+      // 当连接成功后客户端可以向服务器发送消息
+      socket.send('hello')
+    })
+    socket.on('message', (msg) => {
+      console.log('客户端', msg)
+    })
+    socket.on('disconnect', () => {
+      console.log('断开连接')
+    })
+  </script>
+</body>
+</html>
