@@ -20,9 +20,9 @@ let obj2 = {...obj} // 浅拷贝
 
 let obb = {
   a: 1,
-  b () {
+  b: function () {
     console.log('b')
   },
   c: /\d+/
 }
-JSON.stringify(obb)
+JSON.parse(JSON.stringify(obb)) // {a: 1, c: {}}
