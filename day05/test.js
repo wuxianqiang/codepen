@@ -9,17 +9,22 @@ let obb = {
 let res = JSON.parse(JSON.stringify(obb))
 
 // 深拷贝，递归实现
-function deepClone (obj) {
+function deepClone (obj, hash = new WeakMap) {
   if (obj === null) return null
   if (typeof obj !== 'object') return obj // 函数拷贝是无需要管
   if (obj instanceof RegExp) return new RegExp(obj) // 正则
   if (obj instanceof Date) return new Date(obj) // 时间
+  if (hash.has(obj)) return hash.get(obj)
   let newObj = new obj.constructor // 数组和对象都能实现
+  hash.set(obj, newObj)
   for (let key in obj) {
-    newObj[key] = deepClone(obj[key])
+    newObj[key] = deepClone(obj[key], hash)
   }
   return newObj
 }
+
+let obj = {a: 1}
+obj['b'] = obj
 
 Object.assign()
 // 展开运算符运用于数组较多，只能放在最后面
