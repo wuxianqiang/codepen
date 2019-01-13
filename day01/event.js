@@ -55,8 +55,6 @@ fs.readFile('./test.js', () => {
 // fs setImmediate setTimeout
 
 // nextTick 不要写递归
-
-
 function Person () {
   // 让特定的值在下一个队列中执行，好处就是优先级高于timeout
   process.nextTick(() => {

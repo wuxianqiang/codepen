@@ -1,6 +1,6 @@
 // 双向数据绑定
 
-let obj = { name: 'hello', age: { massage: 'hello' } }
+let obj = { name: 'hello', age: 13 }
 
 function update () {
   console.log('数据更新了')
@@ -12,7 +12,6 @@ function observer (obj) {
   for (const key in obj) {
     defineReactive(obj, key, obj[key])
   }
-  // defineReactive()
 }
 observer(obj)
 // obj.name = 100

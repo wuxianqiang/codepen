@@ -3,17 +3,9 @@
 let set = new Set() // 不能使用数组里面的方法
 // set 里面的key 和 value 是一样的
 
-for (const item of set.keys) {
-
-}
-
-for (const item of set.values) {
-
-}
-
-for (const item of set.entries) {
-
-}
+for (const item of set.keys) {}
+for (const item of set.values) {}
+for (const item of set.entries) {}
 
 Object.keys()
 Object.values()
