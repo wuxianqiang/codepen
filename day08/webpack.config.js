@@ -37,7 +37,11 @@ module.exports = {
     })
   ],
   devServer: {
-
+    // 配置开发服务，已那个文件作为启动目录
+    port: 3000,
+    contentBase: './dist', // 指定服务的路径
+    compress: true, // 压缩
+    progress: true // 进度条
   }
 }
 // 在打包的过程中增加功能
