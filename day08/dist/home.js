@@ -81,19 +81,19 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./src/index.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/home.js");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "./src/index.js":
-/*!**********************!*\
-  !*** ./src/index.js ***!
-  \**********************/
+/***/ "./src/home.js":
+/*!*********************!*\
+  !*** ./src/home.js ***!
+  \*********************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-eval("document.getElementById('app').innerHTML = 'zfpx'\r\n// npx 可以直接运行node_modules/.bin 目录下面的命令\r\n\r\n__webpack_require__(/*! ./index */ \"./src/index.js\")\r\n\n\n//# sourceURL=webpack:///./src/index.js?");
+eval("console.log('home')\r\n\n\n//# sourceURL=webpack:///./src/home.js?");
 
 /***/ })
 

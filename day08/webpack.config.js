@@ -5,16 +5,30 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
   mode: 'development', // 指定打包模式
-  entry: './src/index.js', // 从入口打包
+  entry: {
+    home: './src/home.js',
+    login: './src/login.js'
+  }, // 从入口打包
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: 'bundle.js' // 出口的路径
+    filename: '[name].js' // 出口的路径
   },
   module: {
 
   },
   plugins: [
     new HtmlWebpackPlugin({ // 会将打包的文件插入
+      filename: 'home.html',
+      chunks: ['home'], // 指定需要使用的代码块
+      template: './public/index.html', // 指定模块，
+      minify: {
+        removeAttributeQuotes: true, // 去双引号
+        collapseInlineTagWhitespace: true // 去空行
+      }
+    }),
+    new HtmlWebpackPlugin({ // 会将打包的文件插入
+      filename: 'login.html',
+      chunks: ['login'], // 指定需要使用的代码块
       template: './public/index.html', // 指定模块，
       minify: {
         removeAttributeQuotes: true, // 去双引号
